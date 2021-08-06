@@ -102,7 +102,7 @@ CORS(app)
 app.debug = True
 app.config['SECRET_KEY'] = 'super-secret'
 app.config["JWT_EXPIRATION_DELTA"] = timedelta(days=1)  # allows token to last a day
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'            # server for email to be sent on
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_USERNAME'] = 'mikaylabeelders@gmail.com'
 app.config['MAIL_PASSWORD'] = 'Ashleemiks12!*'
@@ -139,7 +139,8 @@ def registration():
             msg = Message('Welcome Email', sender='mikaylabeelders@gmail.com', recipients=[email])
             # message for the email
             msg.body = "Hello " + str(email) + \
-                       "\n\nThank you for registering with us! \n\nWe look forward to doing business with you."
+                       "\n\nThank you for registering with us! \n\nWe look forward to doing business with you. " \
+                       "\n\nRegards"
             mail.send(msg)
 
             response["message"] = "Successful Registration"
@@ -279,7 +280,7 @@ def edit_product(product_id):
                 response["product_description"] = "Product description updated successfully"
                 response["status_code"] = 200
             if data_received.get("total") is not None:
-                put_data['total'] = int(data_received.get('product_price')) * int(data_received.get('product_quantity'))
+                put_data['total'] = data_received.get('total')
                 query = "UPDATE products SET total =? WHERE product_id=?"
                 values = (put_data["total"], str(product_id))
                 db.to_commit(query, values)
