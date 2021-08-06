@@ -1,8 +1,12 @@
 import hmac
 import sqlite3
+from smtplib import SMTPRecipientsRefused
+
 from flask import *
 from flask_jwt import *
+from flask_cors import *
 from flask_mail import Mail, Message
+from datetime import timedelta
 
 
 # creating a user object
@@ -86,6 +90,7 @@ def authenticate(username, password):
         return user
 
 
+# function to identify user
 def identity(payload):
     user_id = payload['identity']
     return userid_table.get(user_id, None)
@@ -93,8 +98,10 @@ def identity(payload):
 
 # initializing app
 app = Flask(__name__)
+CORS(app)
 app.debug = True
 app.config['SECRET_KEY'] = 'super-secret'
+app.config["JWT_EXPIRATION_DELTA"] = timedelta(days=1)  # allows token to last a day
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_USERNAME'] = 'mikaylabeelders@gmail.com'
@@ -116,27 +123,31 @@ def protected():
 def registration():
     response = {}
     db = Database()
+    try:
+        if request.method == "POST":
 
-    if request.method == "POST":
+            first_name = request.form['first_name']
+            last_name = request.form['last_name']
+            email = request.form['email_address']
+            username = request.form['username']
+            password = request.form['password']
 
-        first_name = request.form['first_name']
-        last_name = request.form['last_name']
-        email = request.form['email_address']
-        username = request.form['username']
-        password = request.form['password']
+            query = "INSERT INTO users(first_name, last_name, email_address,username, password) VALUES(?, ?, ?, ?, ?)"
+            values = (first_name, last_name, email, username, password)
+            db.to_commit(query, values)
 
-        query = "INSERT INTO users(first_name, last_name, email_address,username, password) VALUES(?, ?, ?, ?, ?)"
-        values = (first_name, last_name, email, username, password)
-        db.to_commit(query, values)
+            msg = Message('Welcome Email', sender='mikaylabeelders@gmail.com', recipients=[email])
+            # message for the email
+            msg.body = "Hello " + str(email) + \
+                       "\n\nThank you for registering with us! \n\nWe look forward to doing business with you."
+            mail.send(msg)
 
-        msg = Message('Welcome Email', sender='mikaylabeelders@gmail.com', recipients=[email])
-        # message for the email
-        msg.body = "Hello " + str(email) + \
-                   "\n\nThank you for registering with us! \n\nWe look forward to doing business with you."
-        mail.send(msg)
-
-        response["message"] = "Successful Registration"
-        response["status_code"] = 201
+            response["message"] = "Successful Registration"
+            response["status_code"] = 201
+            return response
+    except SMTPRecipientsRefused:
+        response['message'] = "Please enter a valid email address."
+        response['status_code'] = 400
         return response
 
 
