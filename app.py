@@ -290,6 +290,23 @@ def edit_product(product_id):
             return response
 
 
+# route to view single profile
+@app.route('/view-profile/<username>/', methods=["GET"])
+def view_profile(username):
+    response = {}
+    if request.method == "GET":
+        with sqlite3.connect("shop.db") as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM users WHERE username='" + username + "'")
+            data = cursor.fetchall()
+            if data == []:
+                return "User does not exit"
+            else:
+                response['message'] = 200
+                response['data'] = data
+        return response
+
+
 # route to view single existing product using product ID
 @app.route('/view-product/<int:product_id>/', methods=["GET"])
 def view_product(product_id):
