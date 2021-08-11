@@ -104,8 +104,8 @@ app.config['SECRET_KEY'] = 'super-secret'
 app.config["JWT_EXPIRATION_DELTA"] = timedelta(days=1)  # allows token to last a day
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'            # server for email to be sent on
 app.config['MAIL_PORT'] = 465
-app.config['MAIL_USERNAME'] = 'mikaylabeelders@gmail.com'
-app.config['MAIL_PASSWORD'] = 'Ashleemiks12!*'
+app.config['MAIL_USERNAME'] = 'mikayladummy2@gmail.com'
+app.config['MAIL_PASSWORD'] = 'Dummy123!'
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 mail = Mail(app)
