@@ -170,6 +170,7 @@ def init_product_table():
              "product_price TEXT NOT NULL, "
              "product_quantity TEXT NOT NULL, "
              "product_description TEXT NOT NULL, "
+             "product_image TEXT NOT NULL,"
              "total TEXT NOT NULL)")
     db.single_commit(query)
     print("Products table created successfully.")
@@ -190,13 +191,14 @@ def add_product():
         price = request.form['product_price']
         quantity = request.form['product_quantity']
         description = request.form['product_description']
+        image = request.form['product_image']
         total = int(price) * int(quantity)
-        if name == '' or price == '' or quantity == '' or description == '':
+        if name == '' or price == '' or quantity == '' or description == '' or image == '':
             return "Please fill in all entry fields"
         else:
-            query = "INSERT INTO products( product_name, product_price, product_quantity, product_description, total)" \
-                    "VALUES(?, ?, ?, ?, ?)"
-            values = (name, price, quantity, description, total)
+            query = "INSERT INTO products( product_name, product_price, product_quantity, product_description, product_image, total)" \
+                    "VALUES(?, ?, ?, ?, ?, ?)"
+            values = (name, price, quantity, description, image, total)
             db.to_commit(query, values)
 
             response["status_code"] = 201
@@ -278,6 +280,14 @@ def edit_product(product_id):
                 db.to_commit(query, values)
 
                 response["product_description"] = "Product description updated successfully"
+                response["status_code"] = 200
+            if data_received.get("product_image") is not None:
+                put_data['product_image'] = data_received.get('product_image')
+                query = "UPDATE products SET product_image =? WHERE product_id=?"
+                values = (put_data["product_image"], str(product_id))
+                db.to_commit(query, values)
+
+                response["product_image"] = "Product image updated successfully"
                 response["status_code"] = 200
             if data_received.get("total") is not None:
                 put_data['total'] = data_received.get('total')
