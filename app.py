@@ -224,7 +224,7 @@ all_users = show_users()
 
 
 @app.route("/delete-user/<int:user_id>")
-@jwt_required()
+# @jwt_required()
 def delete_user(user_id):
     response = {}
     db = Database()
