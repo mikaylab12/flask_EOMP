@@ -223,6 +223,18 @@ def show_users():
 all_users = show_users()
 
 
+@app.route("/delete-user/<int:user_id>")
+@jwt_required()
+def delete_user(user_id):
+    response = {}
+    db = Database()
+    query = "DELETE FROM users WHERE user_id=" + str(user_id)
+    db.single_commit(query)
+    response['status_code'] = 200
+    response['message'] = "User deleted successfully."
+    return response
+
+
 # creating products object
 class Products(object):
     def __init__(self, product_id, product_name, product_price, product_description):
