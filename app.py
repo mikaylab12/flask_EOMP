@@ -152,6 +152,77 @@ def registration():
         return response
 
 
+@app.route('/edit-user/<int:user_id>/', methods=["PUT"])
+# @jwt_required()
+def edit_user(user_id):
+    response = {}
+    db = Database()
+
+    if request.method == "PUT":
+        with sqlite3.connect('shop.db'):
+            data_received = dict(request.json)
+            put_data = {}
+
+            if data_received.get("first_name") is not None:
+                put_data["first_name"] = data_received.get("first_name")
+                query = "UPDATE users SET first_name =? WHERE user_id=?"
+                values = (put_data["first_name"], user_id)
+                db.to_commit(query, values)
+
+                response['message'] = "First name update was successful."
+                response['status_code'] = 200
+            if data_received.get("last_name") is not None:
+                put_data['last_name'] = data_received.get('last_name')
+                query = "UPDATE users SET last_name =? WHERE user_id=?"
+                values = (put_data["last_name"], str(user_id))
+                db.to_commit(query, values)
+
+                response["last_name"] = "Last name updated successfully"
+                response["status_code"] = 200
+            if data_received.get("email_address") is not None:
+                put_data['email_address'] = data_received.get('email_address')
+                query = "UPDATE users SET email_address =? WHERE user_id=?"
+                values = (put_data["email_address"], str(user_id))
+                db.to_commit(query, values)
+
+                response["email_address"] = "Email address updated successfully"
+                response["status_code"] = 200
+            if data_received.get("username") is not None:
+                put_data['username'] = data_received.get('username')
+                query = "UPDATE users SET username =? WHERE user_id=?"
+                values = (put_data["username"], str(user_id))
+                db.to_commit(query, values)
+
+                response["username"] = "Username updated successfully"
+                response["status_code"] = 200
+            if data_received.get("password") is not None:
+                put_data['password'] = data_received.get('password')
+                query = "UPDATE users SET password =? WHERE user_id=?"
+                values = (put_data["password"], str(user_id))
+                db.to_commit(query, values)
+
+                response["password"] = "Password updated successfully"
+                response["status_code"] = 200
+            return response
+
+
+@app.route('/show-users/', methods=["GET"])
+def show_users():
+    response = {}
+    db = Database()
+    query = "SELECT * FROM users"
+    db.single_commit(query)
+    products = db.fetch_all()
+
+    response['status_code'] = 200
+    response['data'] = products
+    return response
+
+
+# calling function to show all products
+all_users = show_users()
+
+
 # creating products object
 class Products(object):
     def __init__(self, product_id, product_name, product_price, product_description):
