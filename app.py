@@ -187,11 +187,11 @@ def add_product():
     response = {}
     db = Database()
     if request.method == "POST":
-        name = request.form['product_name']
-        price = request.form['product_price']
-        quantity = request.form['product_quantity']
-        description = request.form['product_description']
-        image = request.form['product_image']
+        name = request.json['product_name']
+        price = request.json['product_price']
+        quantity = request.json['product_quantity']
+        description = request.json['product_description']
+        image = request.json['product_image']
         total = int(price) * int(quantity)
         if name == '' or price == '' or quantity == '' or description == '' or image == '':
             return "Please fill in all entry fields"
