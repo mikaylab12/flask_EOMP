@@ -160,43 +160,43 @@ def edit_user(user_id):
 
     if request.method == "PUT":
         with sqlite3.connect('shop.db'):
-            data_received = dict(request.json)
+            data_receive = dict(request.json)
             put_data = {}
 
-            if data_received.get("first_name") is not None:
-                put_data["first_name"] = data_received.get("first_name")
+            if data_receive.get("first_name") is not None:
+                put_data["first_name"] = data_receive.get("first_name")
                 query = "UPDATE users SET first_name =? WHERE user_id=?"
-                values = (put_data["first_name"], user_id)
+                values = (put_data["first_name"], str(user_id))
                 db.to_commit(query, values)
 
                 response['message'] = "First name update was successful."
                 response['status_code'] = 200
-            if data_received.get("last_name") is not None:
-                put_data['last_name'] = data_received.get('last_name')
+            if data_receive.get("last_name") is not None:
+                put_data['last_name'] = data_receive.get('last_name')
                 query = "UPDATE users SET last_name =? WHERE user_id=?"
                 values = (put_data["last_name"], str(user_id))
                 db.to_commit(query, values)
 
                 response["last_name"] = "Last name updated successfully"
                 response["status_code"] = 200
-            if data_received.get("email_address") is not None:
-                put_data['email_address'] = data_received.get('email_address')
+            if data_receive.get("email_address") is not None:
+                put_data['email_address'] = data_receive.get('email_address')
                 query = "UPDATE users SET email_address =? WHERE user_id=?"
                 values = (put_data["email_address"], str(user_id))
                 db.to_commit(query, values)
 
                 response["email_address"] = "Email address updated successfully"
                 response["status_code"] = 200
-            if data_received.get("username") is not None:
-                put_data['username'] = data_received.get('username')
+            if data_receive.get("username") is not None:
+                put_data['username'] = data_receive.get('username')
                 query = "UPDATE users SET username =? WHERE user_id=?"
                 values = (put_data["username"], str(user_id))
                 db.to_commit(query, values)
 
                 response["username"] = "Username updated successfully"
                 response["status_code"] = 200
-            if data_received.get("password") is not None:
-                put_data['password'] = data_received.get('password')
+            if data_receive.get("password") is not None:
+                put_data['password'] = data_receive.get('password')
                 query = "UPDATE users SET password =? WHERE user_id=?"
                 values = (put_data["password"], str(user_id))
                 db.to_commit(query, values)
