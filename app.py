@@ -228,7 +228,7 @@ all_users = show_users()
 def delete_user(user_id):
     response = {}
     db = Database()
-    query = "DELETE FROM users WHERE user_id=" + str(user_id)
+    query = "DELETE * FROM users WHERE user_id=" + str(user_id)
     db.single_commit(query)
     response['status_code'] = 200
     response['message'] = "User deleted successfully."
