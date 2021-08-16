@@ -136,7 +136,7 @@ def registration():
             values = (first_name, last_name, email, username, password)
             db.to_commit(query, values)
 
-            msg = Message('Welcome Email', sender='mikaylabeelders@gmail.com', recipients=[email])
+            msg = Message('Welcome Email', sender='mikayladummy2@gmail.com', recipients=[email])
             # message for the email
             msg.body = "Hello " + str(email) + \
                        "\n\nThank you for registering with us! \n\nWe look forward to doing business with you. " \
@@ -233,6 +233,115 @@ def delete_user(user_id):
     response['status_code'] = 200
     response['message'] = "User deleted successfully."
     return response
+
+
+# admin
+# creating a user object
+class Admin(object):
+    def __init__(self, id, username, password):
+        self.id = id
+        self.username = username
+        self.password = password
+
+
+# create admin table
+def init_admin_table():
+    conn = sqlite3.connect('shop.db')
+    cursor = conn.cursor()
+    print("Opened database successfully")
+    cursor.execute("CREATE TABLE IF NOT EXISTS admin "
+                   "(admin_id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                   "admin_name TEXT NOT NULL,"
+                   "admin_surname TEXT NOT NULL, "
+                   "admin_email TEXT NOT NULL, "
+                   "admin_username TEXT NOT NULL, "
+                   "admin_password TEXT NOT NULL)")
+    print("Users table created successfully")
+    conn.close()
+
+
+# calling function to create users table
+init_admin_table()
+
+
+# fetching admin users from the admin table
+def fetch_admin():
+    db = Database()
+    query = "SELECT * FROM admin"
+    db.single_commit(query)
+    registered_admin = db.fetch_all()
+
+    new_data = []
+
+    for data in registered_admin:
+        new_data.append(User(data[0], data[4], data[5]))
+    return new_data
+
+
+# calling function to fetch all users
+all_admin = fetch_admin()
+
+
+admin_username_table = {u.username: u for u in all_admin}
+adminId_table = {u.id: u for u in all_admin}
+
+
+@app.route('/register-admin/', methods=["POST"])
+def admin_registration():
+    response = {}
+    db = Database()
+    try:
+        if request.method == "POST":
+
+            first_name = request.form['admin_name']
+            last_name = request.form['admin_surname']
+            email = request.form['admin_email']
+            username = request.form['admin_username']
+            password = request.form['admin_password']
+
+            query = "INSERT INTO admin(admin_name, admin_surname, admin_email,admin_username, admin_password) " \
+                    "VALUES(?, ?, ?, ?, ?)"
+            values = (first_name, last_name, email, username, password)
+            db.to_commit(query, values)
+
+            msg = Message('Welcome Email', sender='mikayladummy2@gmail.com', recipients=[email])
+            # message for the email
+            msg.body = "Hello " + str(email) + \
+                       "\n\nThank you for registering as an Admin User! \n\nRegards"
+            mail.send(msg)
+
+            response["message"] = "Successful Registration"
+            response["status_code"] = 201
+            return response
+    except SMTPRecipientsRefused:
+        response['message'] = "Please enter a valid email address."
+        response['status_code'] = 400
+        return response
+
+
+@app.route('/login-admin/', methods=["POST"])
+def admin_login():
+    response = {}
+    db = Database()
+    if request.method == "POST":
+        username = request.json['admin_username']
+        password = request.json['admin_password']
+        conn = sqlite3.connect("shop.db")
+        cur = conn.cursor()
+        query = f"SELECT FROM admin WHERE admin_username= '{username}' and admin_password = '{password}' " \
+                "VALUES(?, ?, ?, ?, ?)"
+        db.single_commit(query)
+
+        if not cur.fetchone():
+            response['message'] = "Please enter valid credentials."
+            response['status_code'] = 400
+            return response
+        else:
+            response['message'] = "Welcome Admin"
+            response['status_code'] = 200
+            return response
+    else:
+        return "Wrong Method"
 
 
 # creating products object
