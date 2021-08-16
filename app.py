@@ -31,6 +31,7 @@ class Database(object):
     # one commit
     def single_commit(self, query):
         self.cursor.execute(query)
+        self.conn.commit()
 
     # to fetch all
     def fetch_all(self):
@@ -228,7 +229,7 @@ all_users = show_users()
 def delete_user(user_id):
     response = {}
     db = Database()
-    query = "DELETE FROM users WHERE user_id='" + str(user_id) + "'"
+    query = "DELETE FROM users WHERE user_id= ' " + str(user_id) + " ' "
     db.single_commit(query)
     response['status_code'] = 200
     response['message'] = "User deleted successfully."
