@@ -256,7 +256,7 @@ def init_admin_table():
                    "admin_email TEXT NOT NULL, "
                    "admin_username TEXT NOT NULL, "
                    "admin_password TEXT NOT NULL)")
-    print("Users table created successfully")
+    print("Admin table created successfully")
     conn.close()
 
 
