@@ -322,7 +322,6 @@ def admin_registration():
 @app.route('/login-admin/', methods=["POST"])
 def admin_login():
     response = {}
-    db = Database()
     if request.method == "POST":
         username = request.json['admin_username']
         password = request.json['admin_password']
@@ -330,8 +329,7 @@ def admin_login():
         cur = conn.cursor()
         query = f"SELECT FROM admin WHERE admin_username= '{username}' and admin_password = '{password}' " \
                 "VALUES(?, ?, ?, ?, ?)"
-        db.single_commit(query)
-
+        cur.execute(query)
         if not cur.fetchone():
             response['message'] = "Please enter valid credentials."
             response['status_code'] = 400
