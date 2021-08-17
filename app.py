@@ -7,6 +7,7 @@ from flask_jwt import *
 from flask_cors import *
 from flask_mail import Mail, Message
 from datetime import timedelta
+from werkzeug.utils import redirect
 
 
 # creating a user object
@@ -146,7 +147,7 @@ def registration():
 
             response["message"] = "Successful Registration"
             response["status_code"] = 201
-            return response
+            return redirect("https://beelders-store-js-eomp.netlify.app/templates/complete_register.html")
     except SMTPRecipientsRefused:
         response['message'] = "Please enter a valid email address."
         response['status_code'] = 400
