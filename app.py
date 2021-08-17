@@ -314,7 +314,7 @@ def admin_registration():
 
             response["message"] = "Successful Registration"
             response["status_code"] = 201
-            return response
+            return redirect("https://beelders-store-js-eomp.netlify.app/templates/admin_complete.html")
     except SMTPRecipientsRefused:
         response['message'] = "Please enter a valid email address."
         response['status_code'] = 400
